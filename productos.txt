@@ -1,0 +1,10 @@
+Cantidad: 10 | Paracetamol | Analgésico, usado para aliviar dolores y reducir fiebre.
+Cantidad: 5 | Ibuprofeno | Anti-inflamatorio, utilizado para reducir inflamación, fiebre y dolor.
+Cantidad: 0 | Syncol | Descongestionante para tratar la congestión nasal y los resfriados.
+Cantidad: 20 | Amoxicilina | Antibiótico utilizado para tratar infecciones bacterianas.
+Cantidad: 5 | Alergofast | Antihistamínico para tratar alergias estacionales.
+Cantidad: 15 | Loratadina | Antihistamínico para el alivio de los síntomas de la alergia.
+Cantidad: 3 | Omeprazol | Medicamento para el tratamiento de úlceras gástricas y reflujo ácido.
+Cantidad: 30 | Aspirina | Analgésico, antiinflamatorio y antipirético.
+Cantidad: 2 | Bismuto | Medicamento utilizado para tratar malestares estomacales y diarrea.
+Cantidad: 12 | Diazepam | Para tratar la ansiedad y transtornos.
