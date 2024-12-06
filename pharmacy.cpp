@@ -21,6 +21,7 @@ void eliminarproducto();
 void capturardatos();
 void existencias();
 void capitalizacion();
+void salir();
 
 int main(){
 
@@ -38,24 +39,24 @@ int main(){
             cout << "4) Eliminar producto" << endl;
             cout << "5) Capturar datos producto (Cantidad)" << endl;
             cout << "6) Ver producto sin existencia" << endl;
+            cout << "7) Salir" << endl;
 
             cout << "\nSeleccione una opcion: "; cin >> opcion; cout << endl;
 
             if (cin.fail()) {
                 cin.clear(); // Limpiar el estado de error
-                cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpiar el buffer de entrada
                 system("cls");
                 continue;
             }
             
-            if (opcion < 1 || opcion > 6) {
+            if (opcion < 1 || opcion > 7) {
                 cout << "\nOpcion no valida\n" << endl;
                 cin.ignore();
                 system("cls");
                 continue;
             }
 
-        } while (opcion < 1 || opcion > 6);
+        } while (opcion < 1 || opcion > 7);
 
         switch (opcion) {
             case 1:
@@ -82,6 +83,9 @@ int main(){
                 cout << "Ver producto sin existencia" << endl;
                 existencias();
                 break;
+            case 7:
+                cout << " Saliendo del programa" << endl;
+                salir();
             default:
                 break;
         }
@@ -94,7 +98,6 @@ int main(){
 }
 
 // Funciones
-
 void productonuevo(){
     fstream archivo;
 
@@ -175,8 +178,78 @@ void buscarproducto(){
 }
 
 void actualizarproducto(){
+    fstream archivoEntrada("productos.txt"); // Archivo original
+    ofstream archivoTemporal("productos_temp.txt"); // Archivo temporal para almacenar los datos modificados
 
+    if (!archivoEntrada) {
+        cout << "Error: No se pudo abrir el archivo original.\n";
+        return;
+    }
+
+    if (!archivoTemporal) {
+        cout << "Error: No se pudo crear el archivo temporal.\n";
+        return;
+    }
+
+    string productoAActualizar;
+    string linea;
+    bool encontrado = false;
+
+    // Solicitar el nombre del producto que desea actualizar
+    cin.ignore(); // Limpiar el buffer para usar getline
+    cout << "Ingrese el nombre del producto que desea actualizar: ";
+    getline(cin, productoAActualizar);
+    producto = productoAActualizar;
+    capitalizacion();
+    productoAActualizar = producto;
+
+    // Leer el archivo línea por línea y buscar el producto
+    while (getline(archivoEntrada, linea)) {
+        if (linea.find(productoAActualizar) != string::npos) {
+            encontrado = true;
+
+            // Mostrar los datos actuales del producto
+            cout << "Producto encontrado:\n";
+            cout << "Datos actuales: " << linea << endl;
+
+            // Solicitar los nuevos datos
+            string nuevoNombre, nuevaDescripcion;
+            int nuevaCantidad;
+
+            cout << "Ingrese el nuevo nombre (o presione Enter para mantenerlo): ";
+            getline(cin, nuevoNombre);
+            if (nuevoNombre.empty()) nuevoNombre = producto;  // Mantener el nombre actual si el usuario no ingresa uno nuevo
+
+            cout << "Ingrese la nueva descripcion (o presione Enter para mantenerla): ";
+            getline(cin, nuevaDescripcion);
+            if (nuevaDescripcion.empty()) nuevaDescripcion = linea.substr(linea.find("|") + 2);  // Mantener la descripción actual
+
+            cout << "Ingrese la nueva cantidad: ";
+            cin >> nuevaCantidad;
+
+            // Reemplazar la línea con los nuevos datos
+            size_t posCantidad = linea.find("Cantidad: ");
+            if (posCantidad != string::npos) {
+                // Modificar la línea con los nuevos datos
+                linea = "Cantidad: " + to_string(nuevaCantidad) + " | " + nuevoNombre + " | " + nuevaDescripcion;
+            }
+        }
+        archivoTemporal << linea << endl; // Copiar todas las líneas (modificada o no) al archivo temporal
+    }
+
+    archivoEntrada.close();
+    archivoTemporal.close();
+
+    if (encontrado) {
+        remove("productos.txt"); // Eliminar el archivo original
+        rename("productos_temp.txt", "productos.txt"); // Renombrar el archivo temporal
+        cout << "Producto actualizado con éxito.\n";
+    } else {
+        remove("productos_temp.txt"); // Eliminar el archivo temporal si no se encontró el producto
+        cout << "El producto '" << productoAActualizar << "' no se encuentra en el archivo.\n";
+    }
 }
+
 
 void eliminarproducto(){
     ifstream archivoEntrada("productos.txt"); // Archivo original
@@ -321,4 +394,8 @@ void existencias(){
 void capitalizacion(){
     transform(producto.begin(), producto.end(), producto.begin(), [](unsigned char c) {return tolower(c);});
     producto[0] = toupper(producto[0]);
+}
+
+void salir(){
+    exit (0);
 }
